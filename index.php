@@ -4,13 +4,13 @@
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <title>Bootstrap 101 Template</title>
+        <title>Infineon Schichtkalender</title>
 
         <!-- Bootstrap -->
         <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
         <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap-theme.min.css">
         <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/fullcalendar/1.6.4/fullcalendar.css">
-        <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/fullcalendar/1.6.4/fullcalendar.print.css">
+        <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/fullcalendar/1.6.4/fullcalendar.print.css" media="print">
         <style>
             body {
                 padding-top: 50px;
@@ -18,6 +18,18 @@
             .starter-template {
                 padding: 40px 15px;
                 text-align: center;
+            }
+            .work-day-event {
+                background-color: orange;
+                border-color: orange;
+                    
+            }
+            .free-day-event {
+                background-color: blue;
+                border-color: blue;
+            }
+            .fc-widget-header, .fc-widget-content {
+                border-color: #333;
             }
         </style>
         <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
@@ -39,22 +51,23 @@
                     </button>
                     <a class="navbar-brand" href="#">Infineon Schichtkalender</a>
                 </div>
-                <div class="collapse navbar-collapse">
-                    <ul class="nav navbar-nav">
-                        <li class="active"><a href="#">Home</a></li>
-                        <li><a href="#about">About</a></li>
-                        <li><a href="#contact">Contact</a></li>
-                    </ul>
-                </div><!--/.nav-collapse -->
             </div>
         </div>
 
         <div class="container">
 
             <div class="starter-template">
-                <h1>Bootstrap starter template</h1>
-                <p class="lead">Use this document as a way to quickly start any new project.<br> All you get is this text and a mostly barebones HTML document.</p>
-                <div id="calendar"></div>
+                <h1>Infineon Schichtkalender</h1>
+
+                <div id="calendar">
+                    <div id="loadCal" class="alert alert-info">Kalender wird geladen...</div>
+                </div>
+                <div id="about">
+                    Schichtkalender für die Infineon-Schicht Nummer 2, zeigt die Arbeitstage, freien Tage und Feiertage an!
+                </div>
+                <div id="about">
+                    Copyright: <a href="mailto:webmaster@elbird.at">Sebastian Vogel</a>
+                </div>
             </div>
 
         </div><!-- /.container -->
@@ -67,27 +80,23 @@
         <script src="//cdnjs.cloudflare.com/ajax/libs/fullcalendar/1.6.4/gcal.js"></script>
         <script>
             $(document).ready(function() {
-
-                // page is now ready, initialize the calendar...
-
                 $('#calendar').fullCalendar({
-                    // put your options and callbacks here
                     eventSources: [
-                        // your event source
                         {
-                            url: "/infineon-shiftcal/jsonFeed.php",
-                            color: "blue"
+                            url: "http://www.google.com/calendar/feeds/de.austrian%23holiday%40group.v.calendar.google.com/public/basic",
+                            backgroundColor: "red",
+                            borderColor: "red"
                         },
                         {
-                            url: "http://www.google.com/calendar/feeds/de.austrian%23holiday%40group.v.calendar.google.com/public/basic"
+                            url: "./jsonFeed.php",
+                            cache: true
                         }
                     ],
                     firstDay: 1,
-                    weekNumbers: true,
                     header: {
                         left: 'title',
                         center: '',
-                        right: 'today prevYear,prev,next,nextYear'
+                        right: 'today prev,next'
                     },
                     monthNames: ['Jänner', 'Februar', 'März', 'April', 'Mai', 'Juni', 'Juli', 'August', 'September', 'November', 'Dezember'],
                     monthNamesShort: ['Jan.', 'Feb.', 'Mär.', 'Apr.', 'Mai', 'Jun.', 'Jul.', 'Aug.', 'Sep.', 'Nov.', 'Dez.'],
@@ -98,6 +107,14 @@
                         month: 'Monat',
                         week: 'Woche',
                         day: 'Tag'
+                    },
+                    loading: function (isLoading) {
+                        if(isLoading) {
+                            $('#loadCal').show();
+                        } else {
+                            $('#loadCal').hide();
+                        }
+                        
                     }
                 });
             });

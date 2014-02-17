@@ -15,8 +15,6 @@ class Constants {
     const EN_DATE_FORMAT = "Y.m.d  H:i T";
     const DE_DATE_FORMAT = "d.m.Y H:i T";
     const STATIC_TIME_AND_ZONE = " 00:00 Europe/Berlin";
-    const SHIFT_1_START = "2013.12.31";
-    const SHIFT_2_START = "2014.01.03";
     
     private static $instance;
     private static $shiftsStart = array(

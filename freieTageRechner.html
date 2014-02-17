@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <link href="favicon.ico" rel="shortcut icon">
+  <link rel="stylesheet" href="http://code.jquery.com/ui/1.9.2/themes/base/jquery-ui.css" />
+  <script src="http://code.jquery.com/jquery-1.8.3.js"></script>
+  <script src="http://code.jquery.com/ui/1.9.2/jquery-ui.js"></script>
+  <script src="https://jquery-ui.googlecode.com/svn/tags/1.8.20/ui/i18n/jquery.ui.datepicker-de.js"></script>
+  <link rel="stylesheet" href="css/style.css">
+  <title>Freie Tage Rechner</title>  
+  <!--[if lt IE 9]><script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+</head>
+
+<body>
+  	<div class="container">
+	    <header class="header clearfix">
+	      <div class="logo">Freie Tage Rechner</div>
+	    </header>
+	    <div class="info">
+		    <article class="hero clearfix">
+				<div class="col_50">
+					<form id="calculate">
+						<div class="col_50">
+							<p>
+								<label for="startDay">
+									Erster Tag der letzten Schicht:<br />
+									<input id="startDay" type="text" class="datepicker" name="startDay" />
+								</label>
+							</p>
+						</div>
+						<div class="col_50">
+							<p>
+								<label for="days">
+									wieviel Tage im voraus?<br />
+									<input id="days" type="text" name="days" value="365" />
+								</label>
+							</p>
+						</div>
+						<div class="clearfix"></div>
+						<div><button   class="button">Berechnen</button></div>
+					</form>
+				</div>
+			</article>
+			<article class="article clearfix">
+				<div id="freeDays" class="col_50"></div>
+			</article>
+  		</div>
+  	    <footer class="footer clearfix">
+      		<div class="copyright">&copy; Sebastian Vogel / Theme: <a href="http://simpliste.ru/en/">simpliste</a></div>
+
+    	</footer>
+  </div>
+</body>
+	<script type="text/javascript">
+		function getFreeDays(startDay, startMonth, startYear, numberDays) {
+			var months = [ 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 ],
+				i = 0,
+				currentDay = startDay,
+				currentMonth = startMonth,
+				currentYear = startYear,
+				currentMonthDays = months[startMonth - 1],
+				result = [];
+
+			for(i = 0; i < numberDays; i++) {
+				if( (i % 9) > 5) {
+					result.push(new Date(currentYear, currentMonth-1, currentDay));
+					//result.push(currentDay + "." + currentMonth + "." + currentYear);
+				}
+				if(currentDay === currentMonthDays) {
+					if(currentMonth === 12) {
+						currentYear++;
+						currentMonth = 1;
+					} else {
+						currentMonth++;
+					}
+					currentDay = 1;
+					if(currentMonth === 2 && (currentYear % 4 === 0) && (currentYear % 100 !== 0)) {
+						currentMonthDays = months[currentMonth - 1] + 1;
+					} else {
+						currentMonthDays = months[currentMonth - 1];
+					}
+				} else {
+					currentDay++;
+				}
+			}
+			return result;
+		}
+		$(function() {
+	        $( ".datepicker" ).datepicker($.datepicker.regional[ "de" ]);
+	        $('#calculate').submit(function (e) {
+	        	var dateString = $('#startDay').attr('value'),
+	        		days = parseInt($('#days').attr('value'), 10),
+	        		startDay,
+					startMonth,
+					startYear,
+					freeDays,
+					i,
+					outputElement = $('#freeDays'),
+					style = "";
+				e.preventDefault();
+				dateString = dateString.split('.');
+				startDay = parseInt(dateString[0], 10);
+				startMonth = parseInt(dateString[1], 10);
+				startYear = parseInt(dateString[2], 10);
+				freeDays = getFreeDays(startDay, startMonth, startYear, days);
+				outputElement.html('<h2>Freie Tage in den nächsten ' + days + " Tagen</h2>")
+				for (i = 0; i < freeDays.length; i++) {
+					if(i !== 0 && i % 3 === 0) {
+						outputElement.append('<div class="clearfix"></div><hr />');
+					}
+					if (freeDays[i].getDay() === 0 || freeDays[i].getDay() === 6) {
+						style = ' style="color:red"';
+					} else {
+						style = '';
+					}
+					outputElement.append('<div class="col_33"' + style + '>' + $.datepicker.formatDate('D, dd.mm.yy', freeDays[i]) + '</div>');
+				}
+				return false;
+	        });
+		});
+	</script>
+
+</body>
+	</html>

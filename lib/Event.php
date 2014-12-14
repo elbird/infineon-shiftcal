@@ -5,7 +5,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
+require_once 'Constants.php';
 /**
  * Description of Event
  *
@@ -68,7 +68,9 @@ class JsonEvent {
     }
 
     public function setEnd($end) {
-        $this->end = $end->format("Y-m-d");
+        $date = clone $end;
+        $date->add(Constants::getInstance()->getIntervalOneDay());
+        $this->end = $date->format("Y-m-d");
     }
 
     public function setClassName($className) {

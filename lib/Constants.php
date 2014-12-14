@@ -12,9 +12,10 @@
  * @author sebastianvogel
  */
 class Constants {
-    const EN_DATE_FORMAT = "Y.m.d  H:i T";
-    const DE_DATE_FORMAT = "d.m.Y H:i T";
-    const STATIC_TIME_AND_ZONE = " 00:00 Europe/Berlin";
+    const EN_DATE_FORMAT = "Y.m.d  H:i";
+    const DE_DATE_FORMAT = "d.m.Y H:i";
+    const DEFAULT_TIMEZONE = "Europe/Vienna";
+    const STATIC_TIME = " 00:00";
     
     private static $instance;
     private static $shiftsStart = array(
@@ -25,6 +26,7 @@ class Constants {
     private $intervalLastWorkDay;
     private $intervalFirstFreeDay;
     private $intervalLastDay;
+    private $intervalOneDay;
     private $intialDatesForShifts = array();
     
     private function __construct() {
@@ -34,6 +36,7 @@ class Constants {
        $this->intervalLastWorkDay = new DateInterval("P5D");
        $this->intervalFirstFreeDay = new DateInterval("P6D");
        $this->intervalLastDay = new DateInterval("P8D");
+       $this->intervalOneDay = new DateInterval("P1D");
     }
     public static function getInstance() {
         if(empty(self::$instance)) {
@@ -56,12 +59,16 @@ class Constants {
     public function getIntervalLastDay() {
         return $this->intervalLastDay;
     }
+    
+    public function getIntervalOneDay() {
+        return $this->intervalOneDay;
+    }
 
     public static function getInitialDateForShift($shiftNo) {
         if(empty(self::$shiftsStart[$shiftNo])) {
             throw new Exception("Unkown shift");
         }
-        return DateTime::createFromFormat(self::EN_DATE_FORMAT, self::$shiftsStart[$shiftNo] . self::STATIC_TIME_AND_ZONE);
+        return DateTime::createFromFormat(self::EN_DATE_FORMAT, self::$shiftsStart[$shiftNo] . self::STATIC_TIME, new  DateTimeZone(self::DEFAULT_TIMEZONE));
     }
 
 }
